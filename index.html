@@ -966,12 +966,12 @@
           </p>
           <div class="formula-box">
             \[
-              n(\Omega)=\binom{10}{2}=45,
+              n(\Omega)=\binom{10}{2} = \mathrm{C}^{2}_{10}=45,
               \qquad
-              n(A)=\binom21\binom81=16.
+              n(A)=\binom21\binom81 = \mathrm{C}^{1}_{2}\cdot \mathrm{C}^{1}_{8} =16.
             \]
             \[
-              P(A)=\frac{16}{45}\approx0{,}3556.
+              P(A)=\frac{n(A)}{n(\Omega)} = \frac{16}{45}\approx0{,}3556.
             \]
           </div>
           <div class="note">
@@ -988,7 +988,9 @@
           </p>
           <div class="formula-box">
             \[
-              P(A)=\frac{\binom73}{\binom{12}{3}}
+              P(A)=\frac{n(A)}{n(\Omega)} 
+              = \frac{\mathrm{C}^{3}_{7}}{\mathrm{C}^{3}_{12}}
+              = \frac{\binom73}{\binom{12}{3}}
               =\frac{35}{220}
               =\frac7{44}
               \approx0{,}1591.
@@ -1010,7 +1012,7 @@
         </p>
         <div class="formula-box">
           \[
-            P(A)=\frac5{36}\approx0{,}1389.
+            P(A)=\frac{n(A)}{n(\Omega)}  =\frac5{36}\approx0{,}1389.
           \]
         </div>
         <p>
@@ -1856,7 +1858,7 @@
         {
           id:6,
           topic:"Biến ngẫu nhiên",
-          question:"Thu thập mẫu về lương của công nhân ngành may thu được bảng số liệu: $\\displaystyle\\begin{array}{c|cccccc}\\text{Mức lương (triệu đ/tháng)}&8&9&10&11&12&13\\\\\\hline\\text{Số công nhân}&68&60&60&78&64&70\\end{array}$. Chọn ngẫu nhiên một công nhân từ bảng mẫu và gọi $X$ là mức lương của công nhân được chọn. Tính $P(X=12)$.",
+          question:"Thu thập mẫu về lương của công nhân ngành may thu được bảng số liệu: <br><br>$\\displaystyle\\begin{array}{c|cccccc}\\text{Mức lương (triệu đ/tháng)}&8&9&10&11&12&13\\\\\\hline\\text{Số công nhân}&68&60&60&78&64&70\\end{array}$.<br><br> Chọn ngẫu nhiên một công nhân từ bảng mẫu và gọi $X$ là mức lương của công nhân được chọn.<br><br> Tính $P(X=12)$.",
           options:[
             "$0{,}16$",
             "$0{,}14$",
