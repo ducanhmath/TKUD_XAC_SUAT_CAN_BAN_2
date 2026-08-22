@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bài học tương tác môn Thống kê ứng dụng: Xác suất của biến cố.">
+  <meta name="author" content="Nguyễn Đức Ánh">
+  <title>Xác suất của biến cố | Thống kê ứng dụng</title>
+
+  <!-- =========================================================
+       MATHJAX
+       ========================================================= -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    /* =========================================================
+       1. THEME TOKENS
+       ========================================================= */
+    :root{
+      --bg:#07111f;
+      --bg-soft:#0d1828;
+      --surface:rgba(15,27,45,.92);
+      --surface-solid:#101d30;
+      --surface-soft:rgba(255,255,255,.055);
+      --surface-softer:rgba(255,255,255,.035);
+
+      --text:#edf5ff;
+      --text-strong:#ffffff;
+      --text-soft:#c0cede;
+      --muted:#8ea0b5;
+
+      --primary:#45e0c3;
+      --primary-dark:#20bda4;
+      --primary-soft:rgba(69,224,195,.11);
+      --blue:#58a6ff;
+      --blue-soft:rgba(88,166,255,.12);
+      --green:#26d995;
+      --green-soft:rgba(38,217,149,.12);
+      --orange:#ffad5c;
+      --orange-soft:rgba(255,173,92,.12);
+      --purple:#b28cff;
+      --purple-soft:rgba(178,140,255,.12);
+      --red:#ff7f8a;
+      --red-soft:rgba(255,127,138,.12);
+
+      --border:rgba(255,255,255,.12);
+      --border-strong:rgba(255,255,255,.20);
+      --shadow:0 20px 55px rgba(0,0,0,.28);
+      --shadow-soft:0 10px 28px rgba(0,0,0,.20);
+
+      --radius-xl:26px;
+      --radius-lg:19px;
+      --radius-md:14px;
+      --content-width:1180px;
+      --base-font-size:16px;
+    }
+
+    body.light-mode{
+      --bg:#eef5fb;
+      --bg-soft:#f8fbff;
+      --surface:rgba(255,255,255,.94);
+      --surface-solid:#ffffff;
+      --surface-soft:#f3f7fc;
+      --surface-softer:#f8fbff;
+
+      --text:#17304d;
+      --text-strong:#102a48;
+      --text-soft:#425c77;
+      --muted:#687d93;
+
+      --primary:#0f9f8d;
+      --primary-dark:#087f72;
+      --primary-soft:#e7f8f5;
+      --blue:#2563eb;
+      --blue-soft:#eff6ff;
+      --green:#059669;
+      --green-soft:#ecfdf5;
+      --orange:#ea580c;
+      --orange-soft:#fff7ed;
+      --purple:#7c3aed;
+      --purple-soft:#faf5ff;
+      --red:#dc2626;
+      --red-soft:#fef2f2;
+
+      --border:#d8e4ef;
+      --border-strong:#bfd0df;
+      --shadow:0 18px 48px rgba(52,72,94,.13);
+      --shadow-soft:0 8px 24px rgba(52,72,94,.10);
+    }
+
+    body.large-text{--base-font-size:18px}
+
+    /* =========================================================
+       2. GLOBAL
+       ========================================================= */
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:145px}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 8% 0%,rgba(69,224,195,.14),transparent 28%),
+        radial-gradient(circle at 92% 4%,rgba(88,166,255,.14),transparent 28%),
+        linear-gradient(145deg,var(--bg),var(--bg-soft));
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      font-size:var(--base-font-size);
+      line-height:1.7;
+      text-rendering:optimizeLegibility;
+      -webkit-font-smoothing:antialiased;
+      transition:background .25s ease,color .25s ease;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+      background-size:34px 34px;
+    }
+
+    body.light-mode::before{
+      background-image:
+        linear-gradient(rgba(30,64,175,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(30,64,175,.025) 1px,transparent 1px);
+    }
+
+    a{color:inherit}
+    button,input,select{font:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+    :focus-visible{outline:3px solid rgba(69,224,195,.40);outline-offset:3px}
+    [hidden]{display:none!important}
+    mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+
+    /* =========================================================
+       3. TOPBAR + PROGRESS
+       ========================================================= */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      border-bottom:1px solid var(--border);
+      background:rgba(7,17,31,.86);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+
+    body.light-mode .topbar{background:rgba(248,252,255,.90)}
+
+    .topbar-inner{
+      width:min(calc(100% - 28px),var(--content-width));
+      min-height:72px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .brand{
+      min-width:0;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+    }
+
+    .brand-logo{
+      width:46px;height:46px;flex:0 0 46px;
+      display:grid;place-items:center;
+      border-radius:15px;
+      color:#07131e;
+      background:linear-gradient(145deg,var(--primary),var(--blue));
+      font-weight:900;font-size:1.25rem;
+      box-shadow:0 10px 25px rgba(69,224,195,.22);
+    }
+
+    .brand-title,.brand-subtitle{
+      display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    }
+
+    .brand-title{
+      color:var(--text-strong);
+      font-size:.98rem;font-weight:850;line-height:1.25;
+    }
+
+    .brand-subtitle{margin-top:2px;color:var(--muted);font-size:.78rem}
+    .top-actions{display:flex;align-items:center;gap:8px}
+
+    .icon-btn{
+      width:42px;height:42px;
+      display:grid;place-items:center;
+      cursor:pointer;color:var(--text-soft);
+      border:1px solid var(--border);
+      border-radius:13px;
+      background:var(--surface-soft);
+      transition:.2s ease;
+    }
+
+    .icon-btn:hover{
+      color:var(--primary);
+      transform:translateY(-2px);
+      border-color:rgba(69,224,195,.48);
+    }
+
+    .reading-progress{height:4px;background:var(--surface-soft)}
+    .reading-progress-fill{
+      width:0;height:100%;
+      background:linear-gradient(90deg,var(--primary),var(--blue));
+      transition:width .15s linear;
+    }
+
+    /* =========================================================
+       4. PAGE + HERO + TOC
+       ========================================================= */
+    .page{
+      width:min(calc(100% - 28px),var(--content-width));
+      margin:0 auto;padding:26px 0 80px;
+    }
+
+    .hero{
+      position:relative;overflow:hidden;
+      padding:clamp(28px,5vw,54px);
+      border:1px solid var(--border);
+      border-radius:30px;
+      background:linear-gradient(135deg,#10283b 0%,#123c48 46%,#1d3f70 100%);
+      box-shadow:var(--shadow);
+    }
+
+    .hero::before,.hero::after{
+      content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.07);
+    }
+    .hero::before{width:350px;height:350px;right:-130px;top:-190px}
+    .hero::after{width:290px;height:290px;left:36%;bottom:-215px}
+
+    .hero-grid{
+      position:relative;z-index:1;
+      display:grid;grid-template-columns:1.45fr .8fr;
+      gap:30px;align-items:center;
+    }
+
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      margin-bottom:15px;padding:7px 13px;
+      color:#e4fffa;font-size:.80rem;font-weight:900;
+      letter-spacing:.06em;text-transform:uppercase;
+      border:1px solid rgba(255,255,255,.19);
+      border-radius:999px;background:rgba(255,255,255,.09);
+    }
+
+    .hero h1{
+      margin:0;color:#fff;
+      font-size:clamp(2.2rem,5vw,4.1rem);
+      line-height:1.07;letter-spacing:-.04em;
+    }
+
+    .hero p{margin:18px 0 0;max-width:780px;color:rgba(255,255,255,.82);font-size:1.04rem}
+
+    .hero-card{
+      padding:22px;color:#fff;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:20px;
+      background:rgba(255,255,255,.09);
+      box-shadow:0 12px 30px rgba(0,0,0,.16);
+      backdrop-filter:blur(10px);
+    }
+
+    .hero-card strong{display:block;color:#fff;font-size:1.08rem}
+    .hero-card ul{margin:12px 0 0;padding-left:20px;color:rgba(255,255,255,.80)}
+    .author-line{margin-top:18px!important;font-weight:850;color:#fff!important}
+
+    .toc{
+      position:sticky;top:86px;z-index:900;
+      display:flex;flex-wrap:wrap;gap:10px;
+      margin:20px 0;padding:12px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface);
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(16px);
+    }
+
+    .toc a{
+      text-decoration:none;padding:9px 14px;
+      border:1px solid var(--border);
+      border-radius:999px;color:var(--text-soft);
+      background:var(--surface-soft);
+      font-weight:800;transition:.2s ease;
+    }
+
+    .toc a:hover,.toc a.active{
+      color:var(--primary);
+      border-color:rgba(69,224,195,.42);
+      background:var(--primary-soft);
+    }
+
+    /* =========================================================
+       5. GENERAL CONTENT COMPONENTS
+       ========================================================= */
+    .section{
+      margin-top:24px;
+      padding:clamp(20px,4vw,30px);
+      scroll-margin-top:148px;
+      border:1px solid var(--border);
+      border-radius:var(--radius-xl);
+      background:var(--surface);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+
+    .section-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+
+    .section-no{
+      width:43px;height:43px;flex:0 0 43px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:14px;color:#07131e;
+      background:linear-gradient(145deg,var(--primary),var(--blue));
+      font-weight:900;box-shadow:0 9px 22px rgba(69,224,195,.20);
+    }
+
+    .section h2{
+      margin:0;color:var(--text-strong);
+      font-size:clamp(1.45rem,3vw,1.8rem);line-height:1.25;
+    }
+
+    .section-sub{margin:5px 0 0;color:var(--muted)}
+    .section h3{color:var(--text-strong)}
+
+    .pill{
+      display:inline-block;margin:10px 0 8px;padding:7px 13px;
+      color:#07131e;font-size:.84rem;font-weight:900;
+      border-radius:999px;
+      background:linear-gradient(145deg,var(--primary),var(--blue));
+      box-shadow:0 8px 20px rgba(69,224,195,.18);
+    }
+
+    .card{
+      margin-top:14px;padding:20px;color:var(--text-soft);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      background:var(--surface-soft);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .card strong{color:var(--text-strong)}
+    .bulleted{padding-left:22px}
+    .bulleted li{margin:6px 0}
+
+    .note,.warning{
+      margin-top:12px;padding:13px 15px;color:var(--text-soft);
+      border-radius:0 13px 13px 0;
+    }
+    .note{border-left:4px solid var(--primary);background:var(--primary-soft)}
+    .warning{border-left:4px solid var(--orange);background:var(--orange-soft)}
+
+    .formula-box{
+      margin:14px 0;padding:16px;text-align:center;
+      border:1px solid var(--border);
+      border-radius:14px;background:var(--surface-solid);
+      overflow-x:auto;
+    }
+
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .mini-stat{
+      padding:15px;border:1px solid var(--border);border-radius:15px;
+      background:var(--surface-solid);
+    }
+    .mini-stat b{display:block;color:var(--primary);font-size:1.1rem}
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+
+    .cta,.btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:42px;padding:10px 16px;cursor:pointer;
+      text-decoration:none;color:#07131e;border:0;border-radius:12px;
+      background:linear-gradient(145deg,var(--primary),var(--blue));
+      font-weight:850;box-shadow:0 8px 20px rgba(69,224,195,.18);
+      transition:.2s ease;
+    }
+    .cta:hover,.btn:hover{transform:translateY(-1px)}
+    .btn.secondary{
+      color:var(--text-soft);background:var(--surface-soft);
+      border:1px solid var(--border);box-shadow:none;
+    }
+    .btn.green{background:linear-gradient(145deg,var(--green),var(--primary));color:#07131e}
+
+    /* =========================================================
+       6. INTERACTIVE LAB COMPONENTS
+       ========================================================= */
+    .problem-box{
+      padding:17px 18px;border:1px solid var(--border);
+      border-radius:16px;background:linear-gradient(145deg,var(--surface-solid),var(--blue-soft));
+      color:var(--text-strong);font-weight:720;
+    }
+
+    .controls{
+      display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;
+      margin-top:15px;
+    }
+
+    .control{min-width:145px;flex:0 1 180px}
+    .control label{
+      display:block;margin:0 0 5px;
+      color:var(--muted);font-size:.78rem;font-weight:800;
+    }
+
+    .control input,.control select{
+      width:100%;min-height:42px;
+      padding:9px 11px;color:var(--text);
+      border:1px solid var(--border);
+      border-radius:11px;background:var(--surface-solid);
+      outline:none;
+    }
+
+    .control input:focus,.control select:focus{
+      border-color:rgba(69,224,195,.55);
+      box-shadow:0 0 0 3px rgba(69,224,195,.10);
+    }
+
+    .lab-grid{
+      display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+      gap:16px;margin-top:16px;
+    }
+
+    .viz-panel{
+      min-width:0;padding:18px;
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      background:var(--surface-solid);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .viz-title{
+      margin:0 0 13px;color:var(--text-strong);
+      font-size:.92rem;font-weight:900;
+    }
+
+    .dice-stage{
+      min-height:210px;display:flex;justify-content:center;align-items:center;
+      gap:34px;
+    }
+
+    .die{
+      width:118px;height:118px;
+      display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);
+      padding:14px;border:3px solid var(--text-soft);border-radius:20px;
+      background:#fff;box-shadow:0 15px 28px rgba(0,0,0,.22);
+      color:#101828;transition:.25s ease;
+    }
+
+    .die.rolling{animation:dice-shake .62s ease}
+    .pip{
+      width:17px;height:17px;place-self:center;
+      border-radius:50%;background:#172033;
+    }
+
+    @keyframes dice-shake{
+      18%{transform:rotate(8deg) translateY(-8px)}
+      38%{transform:rotate(-8deg)}
+      58%{transform:rotate(6deg) translateY(-5px)}
+      78%{transform:rotate(-4deg)}
+    }
+
+    .sum-display{
+      text-align:center;color:var(--primary);
+      font-size:1.35rem;font-weight:900;
+    }
+
+    .outcomes{
+      display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:6px;margin-top:12px;
+    }
+
+    .outcome-cell{
+      min-height:40px;display:grid;place-items:center;
+      border:1px solid var(--border);
+      border-radius:9px;background:var(--surface-soft);
+      color:var(--muted);font-size:.78rem;
+    }
+
+    .outcome-cell.hit{
+      color:#07131e;font-weight:900;
+      background:linear-gradient(145deg,var(--green),var(--primary));
+      border-color:transparent;
+      box-shadow:0 7px 18px rgba(38,217,149,.18);
+    }
+
+    .result-box{
+      margin-top:13px;padding:13px 15px;
+      border:1px solid rgba(38,217,149,.30);
+      border-radius:13px;background:var(--green-soft);
+      color:var(--text-soft);
+    }
+
+    .result-box.blue{
+      border-color:rgba(88,166,255,.30);
+      background:var(--blue-soft);
+    }
+
+    .result-box strong{color:var(--text-strong)}
+
+    .balls{
+      min-height:210px;
+      display:flex;flex-wrap:wrap;justify-content:center;align-content:center;
+      gap:8px;padding:15px;
+    }
+
+    .ball{
+      width:38px;height:38px;border-radius:50%;
+      box-shadow:inset -6px -8px 9px rgba(0,0,0,.20),0 5px 9px rgba(0,0,0,.18);
+      transition:.25s ease;
+    }
+    .ball.green-ball{background:#20c77a}
+    .ball.red-ball{background:#ff6673}
+    .ball.picked{
+      outline:4px solid var(--orange);
+      transform:translateY(-9px) scale(1.08);
+    }
+
+    .picked-label{
+      min-height:32px;margin-top:3px;text-align:center;
+      color:var(--primary);font-weight:900;
+    }
+
+    .formula-live{
+      margin-top:14px;padding:16px;
+      border:1px solid var(--border);border-radius:14px;
+      background:var(--surface-soft);text-align:center;
+      color:var(--text-strong);font-size:1.04rem;
+    }
+
+    /* =========================================================
+       7. QUIZ
+       ========================================================= */
+    .quiz-intro{
+      padding:18px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+      border:1px solid var(--border);border-radius:var(--radius-lg);
+      background:linear-gradient(145deg,var(--primary-soft),var(--surface-solid));
+    }
+    .quiz-intro h3{margin:0;color:var(--text-strong)}
+    .quiz-intro p{margin:5px 0 0;color:var(--text-soft)}
+    .quiz-status{
+      min-width:126px;padding:12px 14px;color:var(--primary);text-align:center;
+      font-weight:900;border:1px solid rgba(69,224,195,.35);
+      border-radius:14px;background:var(--surface-solid);
+    }
+    .questions-container{margin-top:18px;display:grid;gap:16px}
+    .question-card{
+      padding:20px;border:1px solid var(--border);border-radius:var(--radius-lg);
+      background:var(--surface-solid);transition:.2s ease;
+    }
+    .question-card.correct{border-color:rgba(38,217,149,.60);background:linear-gradient(145deg,var(--surface-solid),var(--green-soft))}
+    .question-card.incorrect{border-color:rgba(255,127,138,.60);background:linear-gradient(145deg,var(--surface-solid),var(--red-soft))}
+    .question-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .question-number{margin:0;color:var(--primary);font-size:.82rem;font-weight:900;text-transform:uppercase}
+    .question-topic{padding:5px 9px;color:var(--blue);font-size:.72rem;font-weight:850;border-radius:999px;background:var(--blue-soft)}
+    .question-text{margin:12px 0 15px;color:var(--text-strong);font-weight:700}
+    .options{display:grid;gap:9px}
+    .option{
+      padding:12px 13px;display:grid;grid-template-columns:auto minmax(0,1fr);
+      align-items:start;gap:10px;cursor:pointer;color:var(--text-soft);
+      border:1px solid var(--border);border-radius:13px;background:var(--surface-soft);transition:.2s ease;
+    }
+    .option:hover{color:var(--text-strong);border-color:rgba(69,224,195,.42);background:var(--primary-soft)}
+    .option input{width:18px;height:18px;margin-top:3px;accent-color:var(--primary)}
+    .question-feedback{
+      display:none;margin-top:14px;padding:13px 15px;color:var(--text-soft);
+      border-radius:13px;background:var(--surface-soft);
+    }
+    .question-feedback.show{display:block}
+    .quiz-actions{
+      margin-top:20px;padding:13px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+      border:1px solid var(--border);border-radius:18px;background:var(--surface);
+      box-shadow:var(--shadow-soft);
+    }
+    .result-panel{
+      display:none;margin-top:20px;padding:24px;text-align:center;
+      border:1px solid var(--border);border-radius:var(--radius-xl);
+      background:linear-gradient(145deg,var(--surface-solid),var(--primary-soft));
+    }
+    .result-panel.show{display:block}
+    .score-big{color:var(--primary);font-size:2rem;font-weight:900}
+
+
+    /* =========================================================
+       8. VIDEO
+       ========================================================= */
+    .yt-wrap{
+      position:relative;
+      width:100%;
+      padding-top:56.25%;
+      overflow:hidden;
+      margin:14px 0 10px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:#000;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .yt-wrap iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
+
+    .video-link{
+      color:var(--primary);
+      text-decoration:none;
+      font-weight:850;
+    }
+
+    .video-link:hover{text-decoration:underline}
+
+    /* =========================================================
+       9. FLOATING TOP + FOOTER
+       ========================================================= */
+    .top-link{
+      position:fixed;right:18px;bottom:18px;z-index:920;
+      min-width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+      gap:6px;padding:0 14px;text-decoration:none;color:#07131e;
+      border-radius:15px;background:linear-gradient(145deg,var(--primary),var(--blue));
+      box-shadow:var(--shadow);opacity:0;visibility:hidden;
+      transform:translateY(12px);transition:.2s ease;font-weight:850;
+    }
+    .top-link.show{opacity:1;visibility:visible;transform:translateY(0)}
+
+    .footer{
+      width:min(calc(100% - 28px),var(--content-width));
+      margin:0 auto 40px;padding:20px;text-align:center;
+      color:var(--muted);border-top:1px solid var(--border);
+    }
+
+    /* =========================================================
+       10. RESPONSIVE + PRINT
+       ========================================================= */
+    @media(max-width:860px){
+      .hero-grid,.lab-grid,.two-col{grid-template-columns:1fr}
+      .toc{position:static}
+    }
+
+    @media(max-width:760px){
+      .mini-grid{grid-template-columns:1fr}
+      .quiz-intro{align-items:flex-start;flex-direction:column}
+      .outcomes{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+
+    @media(max-width:600px){
+      .brand-subtitle{display:none}
+      .page,.topbar-inner,.footer{width:min(calc(100% - 18px),var(--content-width))}
+      .page{padding-top:16px}
+      .brand-logo{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+      .brand-title{max-width:180px;font-size:.88rem}
+      .icon-btn{width:39px;height:39px}
+      .hero{padding:26px 20px;border-radius:22px}
+      .section{padding:19px 16px;border-radius:20px}
+      .toc a{flex:1 1 auto;text-align:center}
+      .top-link{right:12px;bottom:12px}
+      .die{width:92px;height:92px;padding:11px}
+      .dice-stage{gap:18px}
+      .controls{align-items:stretch}
+      .control{flex:1 1 140px}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition:none!important}
+    }
+
+    @media print{
+      .topbar,.reading-progress,.toc,.top-link,.quiz-actions,.cta-row,.controls{display:none!important}
+      body{color:#000!important;background:#fff!important}
+      .page{width:100%;padding:0}
+      .hero,.section,.card,.viz-panel{box-shadow:none!important;break-inside:avoid}
+      .hero{color:#000;background:#fff;border:2px solid #aaa}
+      .hero h1,.hero p,.hero-card,.hero-card strong,.hero-card li,.eyebrow,.author-line{color:#000!important}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- =========================================================
+       TOPBAR
+       ========================================================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <div class="brand-logo">P</div>
+        <div>
+          <span class="brand-title">Xác suất của biến cố</span>
+          <span class="brand-subtitle">Thống kê ứng dụng · Nguyễn Đức Ánh</span>
+        </div>
+      </a>
+
+      <div class="top-actions">
+        <button class="icon-btn" id="fontButton" type="button" title="Đổi cỡ chữ" aria-label="Đổi cỡ chữ">A</button>
+        <button class="icon-btn" id="themeButton" type="button" title="Đổi giao diện sáng tối" aria-label="Đổi giao diện sáng tối">☼</button>
+        <button class="icon-btn" id="printButton" type="button" title="In bài học" aria-label="In bài học">⎙</button>
+      </div>
+    </div>
+
+    <div class="reading-progress">
+      <div class="reading-progress-fill" id="readingProgressFill"></div>
+    </div>
+  </header>
+
+  <a id="top"></a>
+
+  <main class="page">
+    <!-- =========================================================
+         HERO
+         ========================================================= -->
+    <header class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">🎲 Thống kê ứng dụng · Bài học tương tác</div>
+          <h1>Xác suất của biến cố</h1>
+          <p>
+            Học xác suất bằng cách quan sát không gian mẫu, thay đổi tham số,
+            thực hiện phép thử ngẫu nhiên và so sánh xác suất lý thuyết với xác suất thực nghiệm.
+          </p>
+          <p class="author-line">Giảng viên: Nguyễn Đức Ánh</p>
+        </div>
+
+        <aside class="hero-card">
+          <strong>🎯 Sau bài học, người học có thể</strong>
+          <ul>
+            <li>Nhận biết phép thử ngẫu nhiên, không gian mẫu và biến cố.</li>
+            <li>Áp dụng định nghĩa cổ điển của xác suất.</li>
+            <li>Đếm số kết quả thuận lợi trong bài toán xúc xắc.</li>
+            <li>Giải bài toán chọn mẫu không hoàn lại bằng tổ hợp.</li>
+            <li>So sánh xác suất lý thuyết với mô phỏng thực nghiệm.</li>
+          </ul>
+        </aside>
+      </div>
+    </header>
+
+    <!-- =========================================================
+         TABLE OF CONTENTS
+         ========================================================= -->
+    <nav class="toc" aria-label="Mục lục bài học">
+      <a href="#s-khai-niem">1. Khái niệm</a>
+      <a href="#s-xac-suat">2. Xác suất cổ điển</a>
+      <a href="#s-xuc-xac">3. Lab xúc xắc</a>
+      <a href="#s-hop-bi">4. Lab hộp bi</a>
+      <a href="#s-quiz">5. Tự kiểm tra</a>
+      <a href="#s-video">6. Video bài học</a>
+    </nav>
+
+    <!-- =========================================================
+         SECTION 1
+         ========================================================= -->
+    <section class="section" id="s-khai-niem">
+      <div class="section-head">
+        <div class="section-no">1</div>
+        <div>
+          <h2>Khái niệm cơ bản</h2>
+          <p class="section-sub">Các đối tượng nền tảng trước khi tính xác suất.</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="pill">Phép thử ngẫu nhiên</div>
+          <p>
+            <strong>Phép thử ngẫu nhiên</strong> là phép thử mà ta biết các kết quả có thể xảy ra,
+            nhưng không thể khẳng định trước kết quả nào sẽ xuất hiện.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="pill">Không gian mẫu và biến cố</div>
+          <ul class="bulleted">
+            <li><strong>Không gian mẫu</strong> \(\Omega\): tập tất cả kết quả có thể xảy ra.</li>
+            <li><strong>Biến cố</strong> \(A\): một tập con của \(\Omega\).</li>
+            <li>Biến cố xảy ra khi kết quả của phép thử thuộc \(A\).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note">
+        Trong các mô hình dưới đây, ta sẽ thay đổi dữ liệu trực tiếp để quan sát
+        cách không gian mẫu và số kết quả thuận lợi thay đổi.
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 2
+         ========================================================= -->
+    <section class="section" id="s-xac-suat">
+      <div class="section-head">
+        <div class="section-no">2</div>
+        <div>
+          <h2>Xác suất cổ điển của biến cố</h2>
+          <p class="section-sub">Áp dụng khi các kết quả sơ cấp hữu hạn và đồng khả năng.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pill">Công thức</div>
+        <p>
+          Nếu \(\Omega\) hữu hạn và các kết quả sơ cấp đồng khả năng, với biến cố
+          \(A\subseteq\Omega\), ta có:
+        </p>
+
+        <div class="formula-box">
+          \[
+            P(A)=\frac{n(A)}{n(\Omega)}.
+          \]
+        </div>
+
+        <div class="mini-grid">
+          <div class="mini-stat"><b>\(n(\Omega)\)</b>Tổng số kết quả có thể.</div>
+          <div class="mini-stat"><b>\(n(A)\)</b>Số kết quả thuận lợi cho \(A\).</div>
+          <div class="mini-stat"><b>\(0\le P(A)\le 1\)</b>Xác suất luôn nằm trong đoạn \([0,1]\).</div>
+        </div>
+      </div>
+
+      <div class="warning">
+        Cần kiểm tra điều kiện <strong>đồng khả năng</strong> trước khi dùng trực tiếp công thức cổ điển.
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 3: DICE LAB
+         ========================================================= -->
+    <section class="section" id="s-xuc-xac">
+      <div class="section-head">
+        <div class="section-no">3</div>
+        <div>
+          <h2>Lab tương tác — Tung hai con xúc xắc</h2>
+          <p class="section-sub">Thay đổi tổng cần đạt và quan sát trực tiếp các kết quả thuận lợi.</p>
+        </div>
+      </div>
+
+      <div class="problem-box">
+        <strong>Bài toán.</strong>
+        Tung hai con xúc xắc cân đối, đồng chất. Tính xác suất tổng số chấm xuất hiện
+        trên hai con bằng <strong id="targetText">6</strong>.
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label for="faces">Số mặt mỗi xúc xắc</label>
+          <input id="faces" type="number" min="2" max="12" value="6">
+        </div>
+
+        <div class="control">
+          <label for="target">Tổng cần đạt</label>
+          <input id="target" type="number" min="2" max="24" value="6">
+        </div>
+
+        <button class="btn" id="rollOnce" type="button">🎲 Tung 1 lần</button>
+        <button class="btn green" id="simulateDice" type="button">▶ Mô phỏng 1000 lần</button>
+        <button class="btn secondary" id="resetDice" type="button">↻ Đặt lại</button>
+      </div>
+
+      <div class="lab-grid">
+        <div class="viz-panel">
+          <p class="viz-title">Mô phỏng một lần tung</p>
+          <div class="dice-stage">
+            <div class="die" id="die1" aria-label="Xúc xắc thứ nhất"></div>
+            <div class="die" id="die2" aria-label="Xúc xắc thứ hai"></div>
+          </div>
+          <div class="sum-display" id="sumLabel">Tổng = 2</div>
+          <div class="note">
+            Khi số mặt lớn hơn 6, mặt xúc xắc được hiển thị bằng số để mô phỏng
+            xúc xắc tổng quát.
+          </div>
+        </div>
+
+        <div class="viz-panel">
+          <p class="viz-title">Không gian mẫu có thứ tự \((i,j)\)</p>
+          <div class="outcomes" id="outcomes"></div>
+
+          <div class="result-box" id="diceTheory"></div>
+
+          <div class="result-box blue" id="diceExperiment">
+            Chưa chạy mô phỏng.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 4: BALL LAB
+         ========================================================= -->
+    <section class="section" id="s-hop-bi">
+      <div class="section-head">
+        <div class="section-no">4</div>
+        <div>
+          <h2>Lab tương tác — Chọn bi không hoàn lại</h2>
+          <p class="section-sub">Thay đổi số bi, cỡ mẫu và số bi xanh cần đạt.</p>
+        </div>
+      </div>
+
+      <div class="problem-box">
+        <strong>Bài toán.</strong>
+        Trong hộp có <strong id="gText">10</strong> bi xanh và
+        <strong id="rText">5</strong> bi đỏ. Chọn ngẫu nhiên
+        <strong id="nText">3</strong> bi, không hoàn lại.
+        Tính xác suất chọn được đúng <strong id="kText">2</strong> bi xanh.
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label for="greenN">Số bi xanh</label>
+          <input id="greenN" type="number" min="0" max="30" value="10">
+        </div>
+
+        <div class="control">
+          <label for="redN">Số bi đỏ</label>
+          <input id="redN" type="number" min="0" max="30" value="5">
+        </div>
+
+        <div class="control">
+          <label for="drawN">Số bi chọn</label>
+          <input id="drawN" type="number" min="1" max="15" value="3">
+        </div>
+
+        <div class="control">
+          <label for="greenK">Đúng số bi xanh</label>
+          <input id="greenK" type="number" min="0" max="15" value="2">
+        </div>
+
+        <button class="btn" id="drawBalls" type="button">● Chọn thử</button>
+        <button class="btn green" id="simulateBalls" type="button">▶ Mô phỏng 3000 lần</button>
+      </div>
+
+      <div class="lab-grid">
+        <div class="viz-panel">
+          <p class="viz-title">Hộp bi trực quan</p>
+          <div class="balls" id="balls"></div>
+          <div class="picked-label" id="pickedText"></div>
+          <div class="note">
+            Các bi có viền cam là những bi được chọn ở lần thử hiện tại.
+          </div>
+        </div>
+
+        <div class="viz-panel">
+          <p class="viz-title">Lập luận bằng tổ hợp</p>
+
+          <div class="formula-live" id="ballFormula"></div>
+
+          <div class="result-box" id="ballTheory"></div>
+
+          <div class="result-box blue" id="ballExperiment">
+            Chưa chạy mô phỏng.
+          </div>
+
+          <div class="warning">
+            Vì chọn <strong>không hoàn lại</strong>, thành phần của hộp thay đổi sau mỗi lần rút.
+            Đếm bằng tổ hợp giúp tính xác suất chính xác mà không cần xét thứ tự chọn.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 5: QUIZ
+         ========================================================= -->
+    <section class="section" id="s-quiz">
+      <div class="section-head">
+        <div class="section-no">5</div>
+        <div>
+          <h2>Tự kiểm tra nhanh</h2>
+          <p class="section-sub">Bài kiểm tra gồm 6 câu, kết hợp kiến thức nền tảng và bài toán xác suất ứng dụng.</p>
+        </div>
+      </div>
+
+      <div class="quiz-intro">
+        <div>
+          <h3>Kiểm tra kiến thức vừa học</h3>
+          <p>Chọn đáp án rồi bấm “Nộp bài và chấm điểm”. Mỗi câu có phản hồi và lời giải ngắn.</p>
+        </div>
+        <div class="quiz-status" id="quizStatus">0/6 câu</div>
+      </div>
+
+      <div class="questions-container" id="questionsContainer"></div>
+
+      <div class="quiz-actions">
+        <button class="btn secondary" id="shuffleQuizButton" type="button">↻ Đảo thứ tự câu</button>
+        <button class="btn" id="submitQuizButton" type="button">✓ Nộp bài và chấm điểm</button>
+        <button class="btn secondary" id="resetQuizButton" type="button">× Làm lại</button>
+      </div>
+
+      <div class="result-panel" id="resultPanel" aria-live="polite">
+        <div class="score-big" id="scoreText">0/6</div>
+        <h3 id="resultTitle">Kết quả bài làm</h3>
+        <p id="resultMessage"></p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 6: VIDEO
+         ========================================================= -->
+    <section class="section" id="s-video">
+      <div class="section-head">
+        <div class="section-no">6</div>
+        <div>
+          <h2>Video bài học</h2>
+          <p class="section-sub">Ôn lại phép thử, biến cố, xác suất của biến cố và các công thức tính cơ bản.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pill">Video tham khảo</div>
+        <h3>[Xác suất thống kê] Khái niệm phép thử, biến cố. Xác suất của biến cố. Các công thức tính và ví dụ.</h3>
+
+        <div class="yt-wrap">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/aobCoRwH2q0?rel=0"
+            title="Khái niệm phép thử, biến cố, xác suất của biến cố, các công thức tính và ví dụ"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <p>
+          Nếu video không phát trực tiếp trong trang,
+          <a class="video-link"
+             href="https://youtu.be/aobCoRwH2q0"
+             target="_blank"
+             rel="noopener noreferrer">
+            mở video trên YouTube
+          </a>.
+        </p>
+      </div>
+    </section>
+
+    <div class="cta-row">
+      <a class="cta" href="#s-xuc-xac">Thực hành xúc xắc</a>
+      <a class="cta" href="#s-hop-bi">Thực hành chọn bi</a>
+      <a class="cta" href="#s-video">Xem video bài học</a>
+      <a class="cta" href="#top">Trở về đầu trang</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <strong>Thống kê ứng dụng — Xác suất của biến cố</strong><br>
+    Giảng viên: Nguyễn Đức Ánh
+  </footer>
+
+  <a class="top-link" href="#top" aria-label="Lên đầu trang">⬆ Lên đầu</a>
+
+  <!-- =========================================================
+       SCRIPT 1: THEME, FONT, PROGRESS, ACTIVE TOC
+       ========================================================= -->
+  <script>
+    (function(){
+      "use strict";
+
+      var THEME_STORAGE_KEY="xsbc-thong-ke-theme-v2";
+      var FONT_STORAGE_KEY="xsbc-thong-ke-font-v2";
+
+      var body=document.body;
+      var themeButton=document.getElementById("themeButton");
+      var fontButton=document.getElementById("fontButton");
+      var printButton=document.getElementById("printButton");
+      var progressFill=document.getElementById("readingProgressFill");
+      var topLink=document.querySelector(".top-link");
+
+      function updateThemeButton(){
+        var isLight=body.classList.contains("light-mode");
+        themeButton.textContent=isLight?"☾":"☼";
+        themeButton.title=isLight?"Chuyển sang nền tối":"Chuyển sang nền sáng";
+        themeButton.setAttribute("aria-label",themeButton.title);
+      }
+
+      function restorePreferences(){
+        try{
+          if(localStorage.getItem(THEME_STORAGE_KEY)==="light"){
+            body.classList.add("light-mode");
+          }
+          if(localStorage.getItem(FONT_STORAGE_KEY)==="large"){
+            body.classList.add("large-text");
+          }
+        }catch(error){}
+
+        updateThemeButton();
+        fontButton.textContent=body.classList.contains("large-text")?"A−":"A";
+      }
+
+      themeButton.addEventListener("click",function(){
+        body.classList.toggle("light-mode");
+        try{
+          localStorage.setItem(
+            THEME_STORAGE_KEY,
+            body.classList.contains("light-mode")?"light":"dark"
+          );
+        }catch(error){}
+        updateThemeButton();
+      });
+
+      fontButton.addEventListener("click",function(){
+        body.classList.toggle("large-text");
+        try{
+          localStorage.setItem(
+            FONT_STORAGE_KEY,
+            body.classList.contains("large-text")?"large":"normal"
+          );
+        }catch(error){}
+        fontButton.textContent=body.classList.contains("large-text")?"A−":"A";
+      });
+
+      printButton.addEventListener("click",function(){
+        window.print();
+      });
+
+      function updateScrollUI(){
+        var top=window.pageYOffset||document.documentElement.scrollTop;
+        var height=document.documentElement.scrollHeight-window.innerHeight;
+        var percent=height>0?Math.min(100,Math.max(0,(top/height)*100)):0;
+
+        progressFill.style.width=percent+"%";
+        topLink.classList.toggle("show",top>450);
+      }
+
+      window.addEventListener("scroll",updateScrollUI,{passive:true});
+
+      var tocLinks=Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+
+      if("IntersectionObserver" in window){
+        var observer=new IntersectionObserver(
+          function(entries){
+            var visible=entries.filter(function(entry){
+              return entry.isIntersecting;
+            });
+
+            if(!visible.length) return;
+
+            visible.sort(function(a,b){
+              return b.intersectionRatio-a.intersectionRatio;
+            });
+
+            var currentId=visible[0].target.id;
+
+            tocLinks.forEach(function(link){
+              link.classList.toggle(
+                "active",
+                link.getAttribute("href")==="#"+currentId
+              );
+            });
+          },
+          {
+            rootMargin:"-24% 0px -58% 0px",
+            threshold:[.05,.2,.45]
+          }
+        );
+
+        document.querySelectorAll("section[id]").forEach(function(section){
+          observer.observe(section);
+        });
+      }
+
+      restorePreferences();
+      updateScrollUI();
+    })();
+  </script>
+
+  <!-- =========================================================
+       SCRIPT 2: INTERACTIVE LABS
+       ========================================================= -->
+  <script>
+    (function(){
+      "use strict";
+
+      function byId(id){
+        return document.getElementById(id);
+      }
+
+      function clamp(value,min,max){
+        var number=Number(value);
+        if(!Number.isFinite(number)) number=min;
+        return Math.max(min,Math.min(max,number));
+      }
+
+      function gcd(a,b){
+        a=Math.round(Math.abs(a));
+        b=Math.round(Math.abs(b));
+        while(b){
+          var t=b;
+          b=a%b;
+          a=t;
+        }
+        return a||1;
+      }
+
+      function combination(n,k){
+        n=Math.floor(n);
+        k=Math.floor(k);
+
+        if(n<0 || k<0 || k>n) return 0;
+
+        k=Math.min(k,n-k);
+
+        var result=1;
+        var i;
+
+        for(i=1;i<=k;i+=1){
+          result=result*(n-k+i)/i;
+        }
+
+        return Math.round(result);
+      }
+
+      function typeset(element){
+        if(window.MathJax && MathJax.typesetPromise && element){
+          MathJax.typesetPromise([element]).catch(function(){});
+        }
+      }
+
+      /* ---------------------------------------------------------
+         DICE LAB
+         --------------------------------------------------------- */
+      var die1Value=1;
+      var die2Value=1;
+
+      function renderStandardDie(element,value){
+        var positions={
+          1:[5],
+          2:[1,9],
+          3:[1,5,9],
+          4:[1,3,7,9],
+          5:[1,3,5,7,9],
+          6:[1,3,4,6,7,9]
+        };
+
+        element.innerHTML="";
+
+        var i;
+
+        for(i=1;i<=9;i+=1){
+          var dot=document.createElement("span");
+
+          if(positions[value].indexOf(i)!==-1){
+            dot.className="pip";
+          }
+
+          dot.style.gridArea=
+            Math.ceil(i/3)+"/"+(((i-1)%3)+1);
+
+          element.appendChild(dot);
+        }
+      }
+
+      function renderDie(element,value,faces){
+        element.innerHTML="";
+
+        if(faces<=6){
+          renderStandardDie(element,value);
+          return;
+        }
+
+        var number=document.createElement("strong");
+        number.textContent=value;
+        number.style.gridArea="2/2";
+        number.style.fontSize="2rem";
+        number.style.placeSelf="center";
+        element.appendChild(number);
+      }
+
+      function updateDiceTheory(){
+        var faces=clamp(byId("faces").value,2,12);
+        var target=clamp(byId("target").value,2,24);
+
+        target=Math.min(target,2*faces);
+
+        byId("faces").value=faces;
+        byId("target").value=target;
+        byId("targetText").textContent=target;
+
+        var outcomes=byId("outcomes");
+        outcomes.innerHTML="";
+
+        var favorable=0;
+        var i,j;
+
+        for(i=1;i<=faces;i+=1){
+          for(j=1;j<=faces;j+=1){
+            var cell=document.createElement("div");
+            cell.className="outcome-cell";
+
+            if(i+j===target){
+              cell.classList.add("hit");
+              favorable+=1;
+            }
+
+            cell.textContent="("+i+","+j+")";
+            outcomes.appendChild(cell);
+          }
+        }
+
+        var total=faces*faces;
+        var common=gcd(favorable,total);
+
+        byId("diceTheory").innerHTML=
+          "<strong>Kết quả lý thuyết</strong><br>"+
+          "Số kết quả thuận lợi: <strong>"+favorable+"</strong>.<br>"+
+          "Tổng số kết quả: <strong>"+total+"</strong>.<br>"+
+          "\\(P(S="+target+")="+favorable+"/"+total+
+          "="+(favorable/common)+"/"+(total/common)+
+          "\\approx "+(favorable/total).toFixed(4)+"\\).";
+
+        if(die1Value>faces) die1Value=1;
+        if(die2Value>faces) die2Value=1;
+
+        renderDie(byId("die1"),die1Value,faces);
+        renderDie(byId("die2"),die2Value,faces);
+        byId("sumLabel").textContent="Tổng = "+(die1Value+die2Value);
+
+        typeset(byId("diceTheory"));
+      }
+
+      byId("faces").addEventListener("input",function(){
+        updateDiceTheory();
+        byId("diceExperiment").textContent="Chưa chạy mô phỏng.";
+      });
+
+      byId("target").addEventListener("input",function(){
+        updateDiceTheory();
+        byId("diceExperiment").textContent="Chưa chạy mô phỏng.";
+      });
+
+      byId("rollOnce").addEventListener("click",function(){
+        var faces=Number(byId("faces").value);
+
+        die1Value=1+Math.floor(Math.random()*faces);
+        die2Value=1+Math.floor(Math.random()*faces);
+
+        var die1=byId("die1");
+        var die2=byId("die2");
+
+        die1.classList.remove("rolling");
+        die2.classList.remove("rolling");
+
+        void die1.offsetWidth;
+
+        die1.classList.add("rolling");
+        die2.classList.add("rolling");
+
+        renderDie(die1,die1Value,faces);
+        renderDie(die2,die2Value,faces);
+
+        byId("sumLabel").textContent="Tổng = "+(die1Value+die2Value);
+      });
+
+      byId("simulateDice").addEventListener("click",function(){
+        var faces=Number(byId("faces").value);
+        var target=Number(byId("target").value);
+        var trials=1000;
+        var hits=0;
+        var i;
+
+        for(i=0;i<trials;i+=1){
+          var a=1+Math.floor(Math.random()*faces);
+          var b=1+Math.floor(Math.random()*faces);
+
+          if(a+b===target){
+            hits+=1;
+          }
+        }
+
+        byId("diceExperiment").innerHTML=
+          "<strong>Xác suất thực nghiệm</strong><br>"+
+          "Trong "+trials+" lần mô phỏng, biến cố xảy ra <strong>"+
+          hits+"</strong> lần.<br>"+
+          "\\(\\widehat P="+hits+"/"+trials+
+          "\\approx "+(hits/trials).toFixed(4)+"\\).";
+
+        typeset(byId("diceExperiment"));
+      });
+
+      byId("resetDice").addEventListener("click",function(){
+        byId("faces").value=6;
+        byId("target").value=6;
+        die1Value=1;
+        die2Value=1;
+        byId("diceExperiment").textContent="Chưa chạy mô phỏng.";
+        updateDiceTheory();
+      });
+
+      /* ---------------------------------------------------------
+         BALL LAB
+         --------------------------------------------------------- */
+      function getBallParameters(){
+        var green=clamp(byId("greenN").value,0,30);
+        var red=clamp(byId("redN").value,0,30);
+
+        if(green+red<1){
+          green=1;
+        }
+
+        var total=green+red;
+        var draw=clamp(byId("drawN").value,1,15);
+        draw=Math.min(draw,total);
+
+        var exactGreen=clamp(byId("greenK").value,0,15);
+        exactGreen=Math.min(exactGreen,draw);
+
+        byId("greenN").value=green;
+        byId("redN").value=red;
+        byId("drawN").value=draw;
+        byId("greenK").value=exactGreen;
+
+        byId("gText").textContent=green;
+        byId("rText").textContent=red;
+        byId("nText").textContent=draw;
+        byId("kText").textContent=exactGreen;
+
+        return {
+          green:green,
+          red:red,
+          total:total,
+          draw:draw,
+          exactGreen:exactGreen
+        };
+      }
+
+      function updateBallModel(){
+        var p=getBallParameters();
+        var balls=byId("balls");
+        var i;
+
+        balls.innerHTML="";
+
+        for(i=0;i<p.green;i+=1){
+          var greenBall=document.createElement("div");
+          greenBall.className="ball green-ball";
+          balls.appendChild(greenBall);
+        }
+
+        for(i=0;i<p.red;i+=1){
+          var redBall=document.createElement("div");
+          redBall.className="ball red-ball";
+          balls.appendChild(redBall);
+        }
+
+        var redNeeded=p.draw-p.exactGreen;
+
+        var favorable=
+          combination(p.green,p.exactGreen)*
+          combination(p.red,redNeeded);
+
+        var totalWays=combination(p.total,p.draw);
+        var probability=totalWays?favorable/totalWays:0;
+        var common=gcd(favorable,totalWays);
+
+        byId("ballFormula").innerHTML=
+          "\\["+
+          "P(X="+p.exactGreen+")="+
+          "\\frac{\\binom{"+p.green+"}{"+p.exactGreen+"}"+
+          "\\binom{"+p.red+"}{"+redNeeded+"}}"+
+          "{\\binom{"+p.total+"}{"+p.draw+"}}"+
+          "\\]";
+
+        if(favorable===0 || totalWays===0){
+          byId("ballTheory").innerHTML=
+            "<strong>Kết quả lý thuyết</strong><br>"+
+            "Biến cố không thể xảy ra với bộ tham số hiện tại, nên <strong>P=0</strong>.";
+        }else{
+          byId("ballTheory").innerHTML=
+            "<strong>Kết quả lý thuyết</strong><br>"+
+            "Số cách thuận lợi: <strong>"+
+            combination(p.green,p.exactGreen)+" × "+
+            combination(p.red,redNeeded)+" = "+favorable+
+            "</strong>.<br>"+
+            "Tổng số cách chọn: <strong>"+
+            combination(p.total,p.draw)+
+            "</strong>.<br>"+
+            "\\(P="+(favorable/common)+"/"+(totalWays/common)+
+            "\\approx "+probability.toFixed(4)+
+            "="+(100*probability).toFixed(2)+"\\%\\).";
+        }
+
+        byId("pickedText").textContent="";
+        typeset(byId("ballFormula"));
+        typeset(byId("ballTheory"));
+      }
+
+      function drawOneSample(markVisual){
+        var p=getBallParameters();
+        var pool=[];
+        var i;
+
+        for(i=0;i<p.green;i+=1){
+          pool.push("green");
+        }
+
+        for(i=0;i<p.red;i+=1){
+          pool.push("red");
+        }
+
+        var picked=[];
+
+        for(i=0;i<p.draw;i+=1){
+          var index=Math.floor(Math.random()*pool.length);
+          picked.push(pool.splice(index,1)[0]);
+        }
+
+        var greenCount=picked.filter(function(color){
+          return color==="green";
+        }).length;
+
+        if(markVisual){
+          var nodes=Array.prototype.slice.call(byId("balls").children);
+
+          nodes.forEach(function(node){
+            node.classList.remove("picked");
+          });
+
+          var availableGreen=[];
+          var availableRed=[];
+
+          nodes.forEach(function(node,index){
+            if(index<p.green){
+              availableGreen.push(index);
+            }else{
+              availableRed.push(index);
+            }
+          });
+
+          picked.forEach(function(color){
+            var list=color==="green"?availableGreen:availableRed;
+            var randomIndex=Math.floor(Math.random()*list.length);
+            var nodeIndex=list.splice(randomIndex,1)[0];
+
+            if(nodes[nodeIndex]){
+              nodes[nodeIndex].classList.add("picked");
+            }
+          });
+
+          byId("pickedText").textContent=
+            "Lần chọn này: "+greenCount+" xanh, "+(p.draw-greenCount)+" đỏ";
+        }
+
+        return greenCount;
+      }
+
+      ["greenN","redN","drawN","greenK"].forEach(function(id){
+        byId(id).addEventListener("input",function(){
+          updateBallModel();
+          byId("ballExperiment").textContent="Chưa chạy mô phỏng.";
+        });
+      });
+
+      byId("drawBalls").addEventListener("click",function(){
+        drawOneSample(true);
+      });
+
+      byId("simulateBalls").addEventListener("click",function(){
+        var p=getBallParameters();
+        var trials=3000;
+        var hits=0;
+        var i;
+
+        for(i=0;i<trials;i+=1){
+          if(drawOneSample(false)===p.exactGreen){
+            hits+=1;
+          }
+        }
+
+        updateBallModel();
+
+        byId("ballExperiment").innerHTML=
+          "<strong>Xác suất thực nghiệm</strong><br>"+
+          "Trong "+trials+" lần mô phỏng, có <strong>"+hits+
+          "</strong> lần chọn đúng "+p.exactGreen+" bi xanh.<br>"+
+          "\\(\\widehat P="+hits+"/"+trials+
+          "\\approx "+(hits/trials).toFixed(4)+"\\).";
+
+        typeset(byId("ballExperiment"));
+      });
+
+      updateDiceTheory();
+      updateBallModel();
+    })();
+  </script>
+
+  <!-- =========================================================
+       SCRIPT 3: QUIZ
+       ========================================================= -->
+  <script>
+    (function(){
+      "use strict";
+
+      var quizQuestions=[
+        {
+          id:1,
+          topic:"Không gian mẫu",
+          question:"Khi tung hai con xúc xắc cân đối 6 mặt, số phần tử của không gian mẫu có thứ tự là bao nhiêu?",
+          options:["12","36","6","24"],
+          answer:1,
+          solution:"Mỗi xúc xắc có 6 khả năng, nên số cặp có thứ tự là $6\\times6=36$."
+        },
+        {
+          id:2,
+          topic:"Phép đếm",
+          question:"Chọn 3 bi từ 15 bi và không xét thứ tự. Số cách chọn là:",
+          options:["$15^3$","$C_{15}^{3}$","$15\\times14\\times13$","$A_{15}^{3}$"],
+          answer:1,
+          solution:"Vì không xét thứ tự nên dùng tổ hợp $C_{15}^{3}$."
+        },
+        {
+          id:3,
+          topic:"Mô phỏng",
+          question:"Khi tăng số lần mô phỏng độc lập, xác suất thực nghiệm thường có xu hướng như thế nào?",
+          options:[
+            "Tiến gần xác suất lý thuyết",
+            "Luôn bằng 1",
+            "Luôn bằng 0",
+            "Không có liên hệ với xác suất lý thuyết"
+          ],
+          answer:0,
+          solution:"Khi số lần thử tăng lớn, tần suất tương đối của biến cố thường tiến gần xác suất lý thuyết."
+        },
+        {
+          id:4,
+          topic:"Xác suất căn bản",
+          question:"Một hộp đựng 10 quả cầu gồm: 2 quả màu đỏ, 3 quả màu vàng và 5 quả màu xanh. Chọn ngẫu nhiên từ hộp đó ra 4 quả cầu. Xác suất chọn được đúng 2 quả màu xanh là:",
+          options:[
+            "$0{,}4762$",
+            "$0{,}2894$",
+            "$0{,}0952$",
+            "$0{,}0476$"
+          ],
+          answer:0,
+          solution:"Có 5 quả xanh và 5 quả không xanh. Do đó $P=\\dfrac{\\binom52\\binom52}{\\binom{10}4}=\\dfrac{100}{210}\\approx0{,}4762$."
+        },
+        {
+          id:5,
+          topic:"Xác suất căn bản",
+          question:"Rút ngẫu nhiên 5 lá bài từ một bộ bài tây 52 lá. Tính xác suất để rút được đúng 2 lá rô.",
+          options:[
+            "$0{,}27428$",
+            "$0{,}36705$",
+            "$0{,}30705$",
+            "$0{,}20428$"
+          ],
+          answer:0,
+          solution:"Bộ bài có 13 lá rô và 39 lá không phải rô. Vì vậy $P=\\dfrac{\\binom{13}2\\binom{39}3}{\\binom{52}5}\\approx0{,}27428$."
+        },
+        {
+          id:6,
+          topic:"Biến ngẫu nhiên",
+          question:"Thu thập mẫu về lương của công nhân ngành may thu được bảng số liệu:<br><br> $\\displaystyle\\begin{array}{c|cccccc}\\text{Mức lương (triệu đ/tháng)}&8&9&10&11&12&13\\\\\\hline\\text{Số công nhân}&68&60&60&78&64&70\\end{array}$.<br><br>Chọn ngẫu nhiên một công nhân từ bảng mẫu và gọi $X$ là mức lương của công nhân được chọn. Tính $P(X=12)$.",
+          options:[
+            "$0{,}16$",
+            "$0{,}14$",
+            "$0{,}22$",
+            "$0{,}13$"
+          ],
+          answer:0,
+          solution:"Tổng số công nhân là $68+60+60+78+64+70=400$. Có 64 công nhân có mức lương 12 triệu đồng/tháng, nên $P(X=12)=\\dfrac{64}{400}=0{,}16$."
+        }
+      ];
+
+      var currentQuestions=quizQuestions.slice();
+
+      function byId(id){
+        return document.getElementById(id);
+      }
+
+      function shuffleArray(array){
+        var copied=array.slice();
+        var i,j,temp;
+
+        for(i=copied.length-1;i>0;i-=1){
+          j=Math.floor(Math.random()*(i+1));
+          temp=copied[i];
+          copied[i]=copied[j];
+          copied[j]=temp;
+        }
+
+        return copied;
+      }
+
+      function typeset(element){
+        if(window.MathJax && MathJax.typesetPromise && element){
+          MathJax.typesetPromise([element]).catch(function(){});
+        }
+      }
+
+      function collectAnswers(){
+        var answers={};
+
+        quizQuestions.forEach(function(question){
+          var selected=document.querySelector(
+            'input[name="quiz-question-'+question.id+'"]:checked'
+          );
+
+          if(selected){
+            answers[question.id]=Number(selected.value);
+          }
+        });
+
+        return answers;
+      }
+
+      function updateStatus(){
+        byId("quizStatus").textContent=
+          Object.keys(collectAnswers()).length+
+          "/"+
+          quizQuestions.length+
+          " câu";
+      }
+
+      function clearGrade(){
+        byId("resultPanel").classList.remove("show");
+
+        document.querySelectorAll(".question-card").forEach(function(card){
+          card.classList.remove("correct","incorrect");
+        });
+
+        document.querySelectorAll(".question-feedback").forEach(function(feedback){
+          feedback.classList.remove("show");
+        });
+      }
+
+      function renderQuestions(){
+        var container=byId("questionsContainer");
+        var html=[];
+
+        currentQuestions.forEach(function(question,index){
+          var options=[];
+
+          question.options.forEach(function(option,optionIndex){
+            options.push(
+              '<label class="option">'+
+                '<input type="radio" name="quiz-question-'+question.id+
+                '" value="'+optionIndex+'">'+
+                '<span>'+option+'</span>'+
+              '</label>'
+            );
+          });
+
+          html.push(
+            '<article class="question-card" id="question-card-'+question.id+'">'+
+              '<div class="question-topline">'+
+                '<p class="question-number">Câu '+(index+1)+'</p>'+
+                '<span class="question-topic">'+question.topic+'</span>'+
+              '</div>'+
+              '<div class="question-text">'+question.question+'</div>'+
+              '<div class="options">'+options.join("")+'</div>'+
+              '<div class="question-feedback" id="feedback-'+question.id+'"></div>'+
+            '</article>'
+          );
+        });
+
+        container.innerHTML=html.join("");
+
+        container.querySelectorAll("input").forEach(function(input){
+          input.addEventListener("change",function(){
+            clearGrade();
+            updateStatus();
+          });
+        });
+
+        updateStatus();
+        typeset(container);
+      }
+
+      function gradeQuiz(){
+        var answers=collectAnswers();
+        var correct=0;
+
+        quizQuestions.forEach(function(question){
+          var selected=answers[question.id];
+          var isCorrect=Number(selected)===question.answer;
+          var card=byId("question-card-"+question.id);
+          var feedback=byId("feedback-"+question.id);
+
+          if(isCorrect){
+            correct+=1;
+          }
+
+          card.classList.remove("correct","incorrect");
+          card.classList.add(isCorrect?"correct":"incorrect");
+
+          feedback.innerHTML=
+            "<strong>"+(isCorrect?"Chính xác.":"Chưa chính xác.")+"</strong>"+
+            (
+              isCorrect
+                ?""
+                :"<div>Đáp án đúng: "+question.options[question.answer]+"</div>"
+            )+
+            '<div style="margin-top:6px;">'+question.solution+"</div>";
+
+          feedback.classList.add("show");
+        });
+
+        var total=quizQuestions.length;
+        var percent=Math.round((correct/total)*100);
+
+        byId("scoreText").textContent=correct+"/"+total;
+
+        if(percent===100){
+          byId("resultTitle").textContent="Xuất sắc!";
+          byId("resultMessage").textContent="Bạn đã trả lời đúng toàn bộ câu hỏi.";
+        }else if(percent>=67){
+          byId("resultTitle").textContent="Kết quả tốt";
+          byId("resultMessage").textContent="Bạn đã nắm được các ý chính của bài học.";
+        }else{
+          byId("resultTitle").textContent="Cần xem lại bài";
+          byId("resultMessage").textContent="Hãy thực hành lại hai mô hình tương tác rồi thử lại.";
+        }
+
+        byId("resultPanel").classList.add("show");
+        typeset(byId("s-quiz"));
+      }
+
+      byId("submitQuizButton").addEventListener("click",gradeQuiz);
+
+      byId("resetQuizButton").addEventListener("click",function(){
+        currentQuestions=quizQuestions.slice();
+        byId("resultPanel").classList.remove("show");
+        renderQuestions();
+      });
+
+      byId("shuffleQuizButton").addEventListener("click",function(){
+        currentQuestions=shuffleArray(currentQuestions);
+        byId("resultPanel").classList.remove("show");
+        renderQuestions();
+      });
+
+      renderQuestions();
+    })();
+  </script>
+</body>
+</html>
