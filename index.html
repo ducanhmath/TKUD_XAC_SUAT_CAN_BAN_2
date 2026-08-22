@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Bài học tương tác môn Thống kê ứng dụng: Xác suất của biến cố.">
+  <meta name="description" content="Bài học tương tác môn Thống kê ứng dụng: Xác suất của biến cố và công thức xác suất cổ điển.">
   <meta name="author" content="Nguyễn Đức Ánh">
-  <title>Xác suất của biến cố | Thống kê ứng dụng</title>
+  <title>Xác suất của biến cố – Công thức xác suất cổ điển | Thống kê ứng dụng</title>
 
   <!-- =========================================================
        MATHJAX
@@ -728,11 +728,12 @@
     <header class="hero">
       <div class="hero-grid">
         <div>
-          <div class="eyebrow">🎲 Thống kê ứng dụng · Bài học tương tác</div>
+          <div class="eyebrow">🎲 Thống kê ứng dụng · Xác suất căn bản</div>
           <h1>Xác suất của biến cố</h1>
           <p>
-            Học xác suất bằng cách quan sát không gian mẫu, thay đổi tham số,
-            thực hiện phép thử ngẫu nhiên và so sánh xác suất lý thuyết với xác suất thực nghiệm.
+            Từ dữ liệu thực tế và các tỷ lệ quan sát, bài học xây dựng các khái niệm
+            phép thử ngẫu nhiên, không gian mẫu, biến cố và công thức xác suất cổ điển;
+            sau đó kiểm chứng bằng ví dụ, phép đếm và mô phỏng.
           </p>
           <p class="author-line">Giảng viên: Nguyễn Đức Ánh</p>
         </div>
@@ -740,11 +741,11 @@
         <aside class="hero-card">
           <strong>🎯 Sau bài học, người học có thể</strong>
           <ul>
+            <li>Phân biệt tỷ lệ quan sát trong dữ liệu với xác suất của một mô hình ngẫu nhiên.</li>
             <li>Nhận biết phép thử ngẫu nhiên, không gian mẫu và biến cố.</li>
-            <li>Áp dụng định nghĩa cổ điển của xác suất.</li>
-            <li>Đếm số kết quả thuận lợi trong bài toán xúc xắc.</li>
-            <li>Giải bài toán chọn mẫu không hoàn lại bằng tổ hợp.</li>
-            <li>So sánh xác suất lý thuyết với mô phỏng thực nghiệm.</li>
+            <li>Nêu đúng điều kiện áp dụng công thức xác suất cổ điển.</li>
+            <li>Tính xác suất bằng phép đếm, tổ hợp và công thức \(P(A)=\dfrac{n(A)}{n(\Omega)}\).</li>
+            <li>So sánh xác suất lý thuyết với tần suất tương đối thu được từ mô phỏng.</li>
           </ul>
         </aside>
       </div>
@@ -754,23 +755,125 @@
          TABLE OF CONTENTS
          ========================================================= -->
     <nav class="toc" aria-label="Mục lục bài học">
-      <a href="#s-khai-niem">1. Khái niệm</a>
-      <a href="#s-xac-suat">2. Xác suất cổ điển</a>
-      <a href="#s-xuc-xac">3. Lab xúc xắc</a>
-      <a href="#s-hop-bi">4. Lab hộp bi</a>
-      <a href="#s-quiz">5. Tự kiểm tra</a>
-      <a href="#s-video">6. Video bài học</a>
+      <a href="#s-dat-van-de">1. Đặt vấn đề</a>
+      <a href="#s-khai-niem">2. Khái niệm</a>
+      <a href="#s-xac-suat">3. Xác suất cổ điển</a>
+      <a href="#s-xuc-xac">4. Lab xúc xắc</a>
+      <a href="#s-hop-bi">5. Lab hộp bi</a>
+      <a href="#s-quiz">6. Tự kiểm tra</a>
+      <a href="#s-video">7. Video bài học</a>
     </nav>
 
     <!-- =========================================================
-         SECTION 1
+         SECTION 1: ĐẶT VẤN ĐỀ TỪ BÀI BÁO
          ========================================================= -->
-    <section class="section" id="s-khai-niem">
+    <section class="section" id="s-dat-van-de">
       <div class="section-head">
         <div class="section-no">1</div>
         <div>
-          <h2>Khái niệm cơ bản</h2>
-          <p class="section-sub">Các đối tượng nền tảng trước khi tính xác suất.</p>
+          <h2>Đặt vấn đề: từ dữ liệu thực tế đến xác suất</h2>
+          <p class="section-sub">Đọc một số liệu thống kê đúng nghĩa trước khi chuyển sang mô hình xác suất.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pill">📰 Tình huống mở đầu</div>
+        <h3>Những con số đáng chú ý về kỹ năng nền tảng của sinh viên</h3>
+        <p>
+          Bài viết trên <strong>VietNamNet</strong> dẫn các báo cáo và khảo sát quốc tế về
+          năng lực toán, đọc hiểu và tính toán của người học bậc đại học hoặc sau THPT.
+          Đây là một tình huống phù hợp để bắt đầu môn <strong>Thống kê ứng dụng</strong>:
+          trước hết cần đọc đúng dữ liệu, xác định đối tượng được khảo sát và hiểu ý nghĩa của các tỷ lệ được công bố.
+        </p>
+
+        <div class="mini-grid">
+          <div class="mini-stat">
+            <b>20–30%</b>
+            Sinh viên trong một khóa giải tích nhập môn tại UC Berkeley được đánh giá thiếu hụt nghiêm trọng kiến thức nền tảng.
+          </div>
+          <div class="mini-stat">
+            <b>gần 1/8</b>
+            Sinh viên năm nhất tại UC San Diego được báo cáo có năng lực toán dưới trình độ THPT.
+          </div>
+          <div class="mini-stat">
+            <b>khoảng 8%</b>
+            Người học bậc sau THPT ở các nước giàu có năng lực đọc hiểu ở mức rất thấp; bài viết cho biết tỷ lệ tương tự xuất hiện ở năng lực tính toán.
+          </div>
+        </div>
+
+        <p style="margin-top:16px">
+          <a class="video-link"
+             href="https://vietnamnet.vn/nhieu-sinh-vien-dai-hoc-thieu-ky-nang-co-ban-den-muc-phai-hoc-lai-toan-thcs-2546748.html"
+             target="_blank" rel="noopener noreferrer">
+            Đọc bài viết trên VietNamNet ↗
+          </a>
+        </p>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="pill">🔎 Góc nhìn Thống kê ứng dụng</div>
+          <h3>Tỷ lệ quan sát cho biết điều gì?</h3>
+          <p>
+            Các giá trị 20–30%, gần \(1/8\) hay khoảng 8% là những <strong>tỷ lệ được ghi nhận từ dữ liệu</strong>.
+            Chúng dùng để mô tả nhóm được khảo sát và có thể là cơ sở để so sánh, theo dõi xu hướng
+            hoặc đặt câu hỏi nghiên cứu tiếp theo.
+          </p>
+          <div class="note">
+            Khi đọc một tỷ lệ thống kê, cần hỏi: dữ liệu được thu thập từ đâu, trên nhóm nào,
+            cách đo lường như thế nào và kết quả có thể khái quát đến phạm vi nào?
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="pill">🎲 Cầu nối sang Xác suất</div>
+          <h3>Từ tỷ lệ quan sát đến một phép thử ngẫu nhiên</h3>
+          <p>
+            Giả sử một nhóm có 8 sinh viên, trong đó đúng 1 sinh viên thuộc nhóm cần hỗ trợ toán nền tảng.
+            Chọn ngẫu nhiên một sinh viên, mỗi sinh viên có cơ hội được chọn như nhau. Gọi
+            \(A\) là biến cố “chọn được sinh viên cần hỗ trợ”. Khi đó
+          </p>
+          <div class="formula-box">
+            \[
+              P(A)=\frac{1}{8}=0{,}125.
+            \]
+          </div>
+          <p>
+            Ở đây \(1/8\) là <strong>xác suất lý thuyết</strong> của một phép thử đã được mô hình hóa,
+            không phải là việc đổi tên tỷ lệ quan sát trong bài báo thành xác suất.
+          </p>
+        </div>
+      </div>
+
+      <div class="warning">
+        <strong>Cần phân biệt:</strong> tỷ lệ quan sát được tính từ dữ liệu đã thu thập; xác suất mô tả
+        mức độ có thể xảy ra của biến cố trong một mô hình ngẫu nhiên. Hai khái niệm có liên hệ chặt chẽ
+        trong thống kê, nhưng không đồng nhất.
+      </div>
+
+      <div class="card">
+        <div class="pill">💬 Câu hỏi dẫn nhập</div>
+        <h3>Vì sao môn Thống kê ứng dụng cần học xác suất?</h3>
+        <p>
+          Thống kê giúp mô tả và rút ra thông tin từ dữ liệu đã quan sát; xác suất cung cấp mô hình
+          để mô tả sự ngẫu nhiên và mức độ không chắc chắn. Khi dùng mẫu để suy luận về tổng thể,
+          hai nội dung này được kết nối trực tiếp với nhau.
+        </p>
+        <div class="result-box blue">
+          <strong>Mạch bài học:</strong> dữ liệu thực tế → tỷ lệ quan sát → phép thử ngẫu nhiên → không gian mẫu → biến cố → xác suất cổ điển.
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECTION 2
+         ========================================================= -->
+    <section class="section" id="s-khai-niem">
+      <div class="section-head">
+        <div class="section-no">2</div>
+        <div>
+          <h2>Các khái niệm cơ bản</h2>
+          <p class="section-sub">Ba thành phần cần xác định trước khi tính xác suất của một biến cố.</p>
         </div>
       </div>
 
@@ -778,73 +881,153 @@
         <div class="card">
           <div class="pill">Phép thử ngẫu nhiên</div>
           <p>
-            <strong>Phép thử ngẫu nhiên</strong> là phép thử mà ta biết các kết quả có thể xảy ra,
-            nhưng không thể khẳng định trước kết quả nào sẽ xuất hiện.
+            <strong>Phép thử ngẫu nhiên</strong> là phép thử có thể lặp lại trong những điều kiện xác định;
+            ta biết trước các kết quả có thể xảy ra nhưng không thể khẳng định kết quả cụ thể trước khi thực hiện phép thử.
           </p>
+          <div class="note">
+            Ví dụ: tung một đồng xu, tung xúc xắc, chọn ngẫu nhiên một sản phẩm để kiểm tra hoặc chọn ngẫu nhiên một người từ danh sách.
+          </div>
         </div>
 
         <div class="card">
           <div class="pill">Không gian mẫu và biến cố</div>
           <ul class="bulleted">
-            <li><strong>Không gian mẫu</strong> \(\Omega\): tập tất cả kết quả có thể xảy ra.</li>
+            <li><strong>Không gian mẫu</strong> \(\Omega\): tập hợp tất cả các kết quả có thể của phép thử.</li>
             <li><strong>Biến cố</strong> \(A\): một tập con của \(\Omega\).</li>
-            <li>Biến cố xảy ra khi kết quả của phép thử thuộc \(A\).</li>
+            <li>Biến cố \(A\) xảy ra khi kết quả thực tế của phép thử thuộc \(A\).</li>
           </ul>
         </div>
       </div>
 
-      <div class="note">
-        Trong các mô hình dưới đây, ta sẽ thay đổi dữ liệu trực tiếp để quan sát
-        cách không gian mẫu và số kết quả thuận lợi thay đổi.
+      <div class="card">
+        <div class="pill">Ví dụ nhanh</div>
+        <p>
+          Tung một con xúc xắc cân đối 6 mặt. Khi đó
+          \(\Omega=\{1,2,3,4,5,6\}\). Nếu \(A\) là biến cố “xuất hiện số chấm chẵn” thì
+          \(A=\{2,4,6\}\).
+        </p>
       </div>
     </section>
 
     <!-- =========================================================
-         SECTION 2
+         SECTION 3
          ========================================================= -->
     <section class="section" id="s-xac-suat">
       <div class="section-head">
-        <div class="section-no">2</div>
+        <div class="section-no">3</div>
         <div>
-          <h2>Xác suất cổ điển của biến cố</h2>
-          <p class="section-sub">Áp dụng khi các kết quả sơ cấp hữu hạn và đồng khả năng.</p>
+          <h2>Công thức xác suất cổ điển</h2>
+          <p class="section-sub">Tính xác suất bằng cách đếm khi không gian mẫu hữu hạn và các kết quả sơ cấp đồng khả năng.</p>
         </div>
       </div>
 
       <div class="card">
-        <div class="pill">Công thức</div>
+        <div class="pill">Định nghĩa cổ điển</div>
         <p>
-          Nếu \(\Omega\) hữu hạn và các kết quả sơ cấp đồng khả năng, với biến cố
-          \(A\subseteq\Omega\), ta có:
+          Giả sử không gian mẫu \(\Omega\) có hữu hạn phần tử và các kết quả sơ cấp là
+          <strong>đồng khả năng</strong>. Với biến cố \(A\subseteq\Omega\), xác suất của \(A\) được tính bởi
         </p>
 
         <div class="formula-box">
           \[
-            P(A)=\frac{n(A)}{n(\Omega)}.
+            \boxed{P(A)=\frac{n(A)}{n(\Omega)}}.
           \]
         </div>
 
         <div class="mini-grid">
-          <div class="mini-stat"><b>\(n(\Omega)\)</b>Tổng số kết quả có thể.</div>
-          <div class="mini-stat"><b>\(n(A)\)</b>Số kết quả thuận lợi cho \(A\).</div>
-          <div class="mini-stat"><b>\(0\le P(A)\le 1\)</b>Xác suất luôn nằm trong đoạn \([0,1]\).</div>
+          <div class="mini-stat"><b>\(n(\Omega)\)</b>Số kết quả có thể của phép thử.</div>
+          <div class="mini-stat"><b>\(n(A)\)</b>Số kết quả thuận lợi cho biến cố \(A\).</div>
+          <div class="mini-stat"><b>\(0\le P(A)\le1\)</b>Điều kiện kiểm tra kết quả xác suất.</div>
         </div>
       </div>
 
+      <div class="card">
+        <div class="pill">Quy trình giải</div>
+        <ol class="bulleted">
+          <li><strong>Xác định phép thử</strong> và mô tả không gian mẫu \(\Omega\).</li>
+          <li><strong>Kiểm tra điều kiện đồng khả năng</strong> của các kết quả sơ cấp.</li>
+          <li><strong>Đếm</strong> \(n(\Omega)\) và \(n(A)\), sử dụng quy tắc đếm hoặc tổ hợp khi cần.</li>
+          <li><strong>Tính</strong> \(P(A)=n(A)/n(\Omega)\) và kiểm tra kết quả nằm trong đoạn \([0,1]\).</li>
+        </ol>
+      </div>
+
       <div class="warning">
-        Cần kiểm tra điều kiện <strong>đồng khả năng</strong> trước khi dùng trực tiếp công thức cổ điển.
+        <strong>Lưu ý:</strong> công thức \(P(A)=n(A)/n(\Omega)\) không được áp dụng máy móc.
+        Điều kiện quan trọng là các kết quả sơ cấp trong không gian mẫu phải đồng khả năng.
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="pill">Ví dụ 1 · Kiểm soát chất lượng</div>
+          <h3>Chọn 2 sản phẩm từ một lô hàng</h3>
+          <p>
+            Một lô có 10 sản phẩm, trong đó 2 sản phẩm lỗi. Chọn ngẫu nhiên 2 sản phẩm, không hoàn lại.
+            Tính xác suất chọn được đúng 1 sản phẩm lỗi.
+          </p>
+          <div class="formula-box">
+            \[
+              n(\Omega)=\binom{10}{2}=45,
+              \qquad
+              n(A)=\binom21\binom81=16.
+            \]
+            \[
+              P(A)=\frac{16}{45}\approx0{,}3556.
+            \]
+          </div>
+          <div class="note">
+            Bài toán này gần với hoạt động lấy mẫu kiểm tra chất lượng: mỗi mẫu gồm 2 sản phẩm được xem là một kết quả của phép thử.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="pill">Ví dụ 2 · Chọn mẫu khảo sát</div>
+          <h3>Chọn 3 sinh viên từ một nhóm</h3>
+          <p>
+            Một nhóm có 12 sinh viên, trong đó 7 sinh viên đã hoàn thành khảo sát. Chọn ngẫu nhiên 3 sinh viên.
+            Tính xác suất cả 3 sinh viên được chọn đều đã hoàn thành khảo sát.
+          </p>
+          <div class="formula-box">
+            \[
+              P(A)=\frac{\binom73}{\binom{12}{3}}
+              =\frac{35}{220}
+              =\frac7{44}
+              \approx0{,}1591.
+            \]
+          </div>
+          <div class="note">
+            Vì chỉ quan tâm nhóm 3 người được chọn, không quan tâm thứ tự chọn, nên sử dụng tổ hợp.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="pill">Ví dụ 3 · Hai con xúc xắc</div>
+        <h3>Tính xác suất tổng số chấm bằng 8</h3>
+        <p>
+          Tung hai con xúc xắc cân đối, đồng chất. Xét các cặp có thứ tự \((i,j)\), ta có
+          \(n(\Omega)=6\times6=36\). Biến cố \(A\): “tổng số chấm bằng 8” gồm
+          \((2,6),(3,5),(4,4),(5,3),(6,2)\), nên \(n(A)=5\).
+        </p>
+        <div class="formula-box">
+          \[
+            P(A)=\frac5{36}\approx0{,}1389.
+          \]
+        </div>
+        <p>
+          Lab bên dưới cho phép thay đổi tổng cần đạt và so sánh xác suất lý thuyết với tần suất tương đối sau nhiều lần mô phỏng.
+        </p>
       </div>
     </section>
 
     <!-- =========================================================
-         SECTION 3: DICE LAB
+         SECTION 4: DICE LAB
          ========================================================= -->
     <section class="section" id="s-xuc-xac">
       <div class="section-head">
-        <div class="section-no">3</div>
+        <div class="section-no">4</div>
         <div>
-          <h2>Lab tương tác — Tung hai con xúc xắc</h2>
-          <p class="section-sub">Thay đổi tổng cần đạt và quan sát trực tiếp các kết quả thuận lợi.</p>
+          <h2>Thực hành tương tác — Tung hai con xúc xắc</h2>
+          <p class="section-sub">Thay đổi tổng cần đạt, xác định các kết quả thuận lợi và so sánh lý thuyết với mô phỏng.</p>
         </div>
       </div>
 
@@ -898,14 +1081,14 @@
     </section>
 
     <!-- =========================================================
-         SECTION 4: BALL LAB
+         SECTION 5: BALL LAB
          ========================================================= -->
     <section class="section" id="s-hop-bi">
       <div class="section-head">
-        <div class="section-no">4</div>
+        <div class="section-no">5</div>
         <div>
-          <h2>Lab tương tác — Chọn bi không hoàn lại</h2>
-          <p class="section-sub">Thay đổi số bi, cỡ mẫu và số bi xanh cần đạt.</p>
+          <h2>Thực hành tương tác — Chọn bi không hoàn lại</h2>
+          <p class="section-sub">Thay đổi thành phần hộp, cỡ mẫu và số bi xanh cần đạt để quan sát công thức tổ hợp.</p>
         </div>
       </div>
 
@@ -972,11 +1155,11 @@
     </section>
 
     <!-- =========================================================
-         SECTION 5: QUIZ
+         SECTION 6: QUIZ
          ========================================================= -->
     <section class="section" id="s-quiz">
       <div class="section-head">
-        <div class="section-no">5</div>
+        <div class="section-no">6</div>
         <div>
           <h2>Tự kiểm tra nhanh</h2>
           <p class="section-sub">Bài kiểm tra gồm 6 câu, kết hợp kiến thức nền tảng và bài toán xác suất ứng dụng.</p>
@@ -1007,11 +1190,11 @@
     </section>
 
     <!-- =========================================================
-         SECTION 6: VIDEO
+         SECTION 7: VIDEO
          ========================================================= -->
     <section class="section" id="s-video">
       <div class="section-head">
-        <div class="section-no">6</div>
+        <div class="section-no">7</div>
         <div>
           <h2>Video bài học</h2>
           <p class="section-sub">Ôn lại phép thử, biến cố, xác suất của biến cố và các công thức tính cơ bản.</p>
@@ -1463,26 +1646,12 @@
         var common=gcd(favorable,totalWays);
 
         byId("ballFormula").innerHTML=
-        "\\["+
-        "P(X="+p.exactGreen+")="+
-
-        "\\frac{\\binom{"+p.green+"}{"+p.exactGreen+"}"+
-        "\\binom{"+p.red+"}{"+redNeeded+"}}"+
-        "{\\binom{"+p.total+"}{"+p.draw+"}}"+
-
-        "="+
-
-        "\\dfrac{C_{"+p.green+"}^{"+p.exactGreen+"}"+
-        "\\cdot C_{"+p.red+"}^{"+redNeeded+"}}"+
-        "{C_{"+p.total+"}^{"+p.draw+"}}"+
-
-        "="+
-
-        "\\frac{"+(favorable/common)+"}{"+(totalWays/common)+"}"+
-
-        "\\approx "+probability.toFixed(4)+
-
-        "\\]";
+          "\\["+
+          "P(X="+p.exactGreen+")="+
+          "\\frac{\\binom{"+p.green+"}{"+p.exactGreen+"}"+
+          "\\binom{"+p.red+"}{"+redNeeded+"}}"+
+          "{\\binom{"+p.total+"}{"+p.draw+"}}"+
+          "\\]";
 
         if(favorable===0 || totalWays===0){
           byId("ballTheory").innerHTML=
@@ -1617,11 +1786,11 @@
       var quizQuestions=[
         {
           id:1,
-          topic:"Không gian mẫu",
-          question:"Khi tung hai con xúc xắc cân đối 6 mặt, số phần tử của không gian mẫu có thứ tự là bao nhiêu?",
-          options:["12","36","6","24"],
-          answer:1,
-          solution:"Mỗi xúc xắc có 6 khả năng, nên số cặp có thứ tự là $6\\times6=36$."
+          topic:"Thống kê và xác suất",
+          question:"Một báo cáo cho biết gần 1/8 sinh viên trong một nhóm được khảo sát có một đặc điểm nhất định. Con số 1/8 trong phát biểu này nên được hiểu trước hết là gì?",
+          options:["Tỷ lệ quan sát từ dữ liệu","Xác suất cổ điển trong mọi trường hợp","Số phần tử của không gian mẫu","Xác suất chắc chắn của mọi sinh viên"],
+          answer:0,
+          solution:"Trong báo cáo, 1/8 trước hết là tỷ lệ quan sát từ dữ liệu. Chỉ khi xây dựng một phép thử ngẫu nhiên với mô hình phù hợp ta mới nói đến xác suất của biến cố."
         },
         {
           id:2,
@@ -1633,16 +1802,16 @@
         },
         {
           id:3,
-          topic:"Mô phỏng",
-          question:"Khi tăng số lần mô phỏng độc lập, xác suất thực nghiệm thường có xu hướng như thế nào?",
+          topic:"Xác suất cổ điển",
+          question:"Điều kiện quan trọng để áp dụng trực tiếp công thức $P(A)=n(A)/n(\\Omega)$ là gì?",
           options:[
-            "Tiến gần xác suất lý thuyết",
-            "Luôn bằng 1",
-            "Luôn bằng 0",
-            "Không có liên hệ với xác suất lý thuyết"
+            "Không gian mẫu hữu hạn và các kết quả sơ cấp đồng khả năng",
+            "Biến cố phải có đúng hai kết quả",
+            "Số lần thử phải lớn hơn 1000",
+            "Dữ liệu phải được trình bày bằng phần trăm"
           ],
           answer:0,
-          solution:"Khi số lần thử tăng lớn, tần suất tương đối của biến cố thường tiến gần xác suất lý thuyết."
+          solution:"Định nghĩa cổ điển áp dụng khi không gian mẫu hữu hạn và các kết quả sơ cấp đồng khả năng."
         },
         {
           id:4,
@@ -1673,7 +1842,7 @@
         {
           id:6,
           topic:"Biến ngẫu nhiên",
-          question:"Thu thập mẫu về lương của công nhân ngành may thu được bảng số liệu:<br><br> $\\displaystyle\\begin{array}{c|cccccc}\\text{Mức lương (triệu đ/tháng)}&8&9&10&11&12&13\\\\\\hline\\text{Số công nhân}&68&60&60&78&64&70\\end{array}$.<br><br>Chọn ngẫu nhiên một công nhân từ bảng mẫu và gọi $X$ là mức lương của công nhân được chọn. Tính $P(X=12)$.",
+          question:"Thu thập mẫu về lương của công nhân ngành may thu được bảng số liệu: $\\displaystyle\\begin{array}{c|cccccc}\\text{Mức lương (triệu đ/tháng)}&8&9&10&11&12&13\\\\\\hline\\text{Số công nhân}&68&60&60&78&64&70\\end{array}$. Chọn ngẫu nhiên một công nhân từ bảng mẫu và gọi $X$ là mức lương của công nhân được chọn. Tính $P(X=12)$.",
           options:[
             "$0{,}16$",
             "$0{,}14$",
