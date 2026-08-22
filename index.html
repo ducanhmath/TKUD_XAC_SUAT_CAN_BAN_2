@@ -1646,12 +1646,26 @@
         var common=gcd(favorable,totalWays);
 
         byId("ballFormula").innerHTML=
-          "\\["+
-          "P(X="+p.exactGreen+")="+
-          "\\frac{\\binom{"+p.green+"}{"+p.exactGreen+"}"+
-          "\\binom{"+p.red+"}{"+redNeeded+"}}"+
-          "{\\binom{"+p.total+"}{"+p.draw+"}}"+
-          "\\]";
+        "\\["+
+        "P(X="+p.exactGreen+")="+
+
+        "\\frac{\\binom{"+p.green+"}{"+p.exactGreen+"}"+
+        "\\binom{"+p.red+"}{"+redNeeded+"}}"+
+        "{\\binom{"+p.total+"}{"+p.draw+"}}"+
+
+        "="+
+
+        "\\dfrac{C_{"+p.green+"}^{"+p.exactGreen+"}"+
+        "\\cdot C_{"+p.red+"}^{"+redNeeded+"}}"+
+        "{C_{"+p.total+"}^{"+p.draw+"}}"+
+
+        "="+
+
+        "\\frac{"+(favorable/common)+"}{"+(totalWays/common)+"}"+
+
+        "\\approx "+probability.toFixed(4)+
+
+        "\\]";
 
         if(favorable===0 || totalWays===0){
           byId("ballTheory").innerHTML=
